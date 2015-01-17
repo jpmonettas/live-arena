@@ -40,13 +40,14 @@
       (update-in [:status] (constantly :finished))
       (update-in [:finish-reason] (constantly :time-limit)))))
 
-(defrecord ShutdownGameEvent [timestap]
+(defrecord ShutdownGameEvent [timestamp]
   Event
 
   (enhance [this] this)
   
   (step-game [this game]
     (-> game
+      (assoc :end-time timestamp)
       (update-in [:status] (constantly :shutdown)))))
 
 (defrecord AwardEvent [timestamp player award]
@@ -101,7 +102,7 @@
       (update-in [:points] u/string->int)))
   
   (step-game [this game]
-    (assoc-in game [:players-stats player :points] points)))
+    (update-in game [:players-stats player :points-hist] (fn [ph] (conj ph points)))))
 
 
 

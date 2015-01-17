@@ -27,13 +27,18 @@
                    :current-game {}
                    :games-history []})
 
-(defn teams [game]
+(defn teams
+
+  "Given a game returns the names of blue an red teams."
+  
+  [game]
   (let [tms (->> game
               :players-stats
               vec
               (group-by (comp :team second)))]
     {:blue (map first (:blue tms))
      :red (map first (:red tms))}))
+
 
 (defn step [state e]
   (let [stepped-game (e/step-game e (:current-game state))]
@@ -45,7 +50,7 @@
       (assoc state :current-game stepped-game))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; For testing
+;; For trying on the repl
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #_(e/build-event "5:08 Award: 7 3: Assassin gained the DEFENCE award!")
