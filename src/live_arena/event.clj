@@ -89,7 +89,6 @@
           victim-team (get-in game [:players-stats victim :team])]
       (-> game
         (update-in [:players-stats killer :kills victim weapon] u/incs)
-        (update-in [:players-stats victim :dies killer weapon] u/incs)
         (assoc-in [:players-stats killer :team] (or killer-team (u/opposite-flag victim-team)))
         (assoc-in [:players-stats victim :team] (or victim-team (u/opposite-flag killer-team)))))))
 
@@ -171,5 +170,5 @@
       (let [[regexp constructor attrs] (first formats)
             match (when regexp (re-matches regexp line))]
         (if match
-          (apply constructor (rest match))
+          (enhance (apply constructor (rest match)))
           (when (next formats) (recur (next formats))))))))

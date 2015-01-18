@@ -4,8 +4,8 @@
 
 (facts "About creating events and enhacing them"
        
-       (fact "should build and enhance a kill event for a kill line"
-             (let [e (enhance (build-event "  5:41 Kill: 0 4 23: Matrero killed VOLVIO UN DIA by MOD_NAIL"))]
+       (fact "should build a kill event for a kill line"
+             (let [e (build-event "  5:41 Kill: 0 4 23: Matrero killed VOLVIO UN DIA by MOD_NAIL")]
 
                e        => {:timestamp "  5:41", :victim "Gustav", :killer "Tincho", :weapon :nail}
 
@@ -22,29 +22,20 @@
 
               {:players-stats {"German" {:team nil
                                         :kills {"Diego" {:shotgun 1 :nail 2}
-                                                "Gustav" {:nail 1}}
-                                        :dies {"Gustav" {:rocket 2}
-                                               "Nando" {:railgun 1 :plasma 3}}}
+                                                "Gustav" {:nail 1}}}
                               "Gustav" {:team :blue
                                         :kills {"Diego" {:shotgun 1 :nail 2}
-                                                "Gustav" {:nail 1}}
-                                        :dies {"Gustav" {:rocket 2}
-                                               "Nando" {:railgun 1 :plasma 3}}}}
+                                                "Gustav" {:nail 1}}}}
                :status :running})
 
              =>
 
              {:players-stats {"German" {:team :red
                                         :kills {"Diego" {:shotgun 1 :nail 2}
-                                                "Gustav" {:nail 2}}
-                                        :dies {"Gustav" {:rocket 2}
-                                               "Nando" {:railgun 1 :plasma 3}}}
+                                                "Gustav" {:nail 2}}}
                               "Gustav" {:team :blue
                                         :kills {"Diego" {:shotgun 1 :nail 2}
-                                                "Gustav" {:nail 1}}
-                                        :dies {"Gustav" {:rocket 2}
-                                               "Nando" {:railgun 1 :plasma 3}
-                                               "German" {:nail 1}}}}
+                                                "Gustav" {:nail 1}}}}
               :status :running})
 
 

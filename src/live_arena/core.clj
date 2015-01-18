@@ -1,14 +1,17 @@
 (ns live-arena.core
-  (:require [live-arena.event :as e]
-            [clojure.string :as s]
+  (:require [clojure.string :as s]
+            [live-arena.event :as e]
+            [live-arena.stats :as stats]
             [live-arena.utils :as u])
   (:gen-class))
 
-;; {:overall-stats (games-merge-here)
+;; {:overall-stats {:frag-battles {["JP" "Pixel"] 115
+;;                                 ["Pixel" "JP"] 220}
+;;                  :matches-battels {["JP" "German"] 5
+;;                                    ["Pixel" "JP"] 4}}
 ;;  :current-game {:players-stats {"JP" {:team :red
 ;;                                       :kills {"Pixel" {:railgun 10
 ;;                                                        :rocket 5}}
-;;                                       :dies {"German" {:railgun 8}}
 ;;                                       :points 0
 ;;                                       :awards {"DEFENCE" 1
 ;;                                                "EXCELENT" 3}
@@ -18,8 +21,6 @@
 ;;  :games-history [{game1}
 ;;                  {game2}
 ;;                  {game3}]}
-
-
 
 
 
@@ -43,10 +44,14 @@
 (defn step [state e]
   (let [stepped-game (e/step-game e (:current-game state))]
     (if (= (:status stepped-game) :shutdown)
+      ;; a game is over, move it to history, add it to stats and
+      ;; create a new one
       (-> state
         (update-in [:games-history] (fn [hist] (conj hist stepped-game)))
+        (update-in [:overall-stats] stats/update-stats stepped-game)
         (assoc :current-game {}))
 
+      ;; just keep stepping the current game
       (assoc state :current-game stepped-game))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,11 +60,10 @@
 
 #_(e/build-event "5:08 Award: 7 3: Assassin gained the DEFENCE award!")
 
-#_(def one-state (->> (slurp "./logs/one-ctf-game.log")
+#_(def two-state (->> (slurp "./logs/two-ctf-game.log")
                    (s/split-lines)
                    (map e/build-event)
                    (remove nil?)
-                   (map e/enhance)
                    (reduce step initial-game)))
 
 #_(-> one-state :games-history first teams)
