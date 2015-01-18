@@ -2,7 +2,24 @@
   (:require [live-arena.stats :refer :all]
             [midje.sweet :refer :all]))
 
- 
+
+(fact "should calculate teams-stats from game"
+      (teams-stats {:players-stats {"German" {:team :red
+                                              :captured-flags 2}
+                                    "JP" {:team :blue
+                                          :captured-flags 2}
+                                    "Gustav" {:team :red
+                                              :captured-flags 1}
+                                    "Tincho" {:team :blue
+                                              :captured-flags 3}}})
+
+      =>
+
+      {:blue {:members ["JP" "Tincho"]
+              :flags 5}
+       :red {:members ["German" "Gustav"]
+             :flags 3}}) 
+
 (fact "should calculate kills by players from weapons kill"
 
       (kills-totals {"Diego" {:shotgun 1 :nail 2}

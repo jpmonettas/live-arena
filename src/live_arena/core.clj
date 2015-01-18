@@ -5,40 +5,25 @@
             [live-arena.utils :as u])
   (:gen-class))
 
-;; {:overall-stats {:frag-battles {["JP" "Pixel"] 115
-;;                                 ["Pixel" "JP"] 220}
-;;                  :matches-battels {["JP" "German"] 5
-;;                                    ["Pixel" "JP"] 4}}
-;;  :current-game {:players-stats {"JP" {:team :red
-;;                                       :kills {"Pixel" {:railgun 10
-;;                                                        :rocket 5}}
-;;                                       :points 0
-;;                                       :awards {"DEFENCE" 1
-;;                                                "EXCELENT" 3}
-;;                                       :captured-flags 3
-;;                                       :returned-flags 2}}
-;;                 :status running}
-;;  :games-history [{game1}
-;;                  {game2}
-;;                  {game3}]}
-
-
-
-(def initial-game {:overall-stats {}
-                   :current-game {}
-                   :games-history []})
-
-(defn teams
-
-  "Given a game returns the names of blue an red teams."
+(comment
   
-  [game]
-  (let [tms (->> game
-              :players-stats
-              vec
-              (group-by (comp :team second)))]
-    {:blue (map first (:blue tms))
-     :red (map first (:red tms))}))
+  {:overall-stats {:frag-battles {["JP" "Pixel"] 115
+                                  ["Pixel" "JP"] 220}
+                   :match-battles {["JP" "German"] 5
+                                   ["Pixel" "JP"] 4}}
+   :current-game {:players-stats {"JP" {:team :red
+                                        :kills {"Pixel" {:railgun 10
+                                                         :rocket 5}}
+                                        :points 0
+                                        :awards {"DEFENCE" 1
+                                                 "EXCELENT" 3}
+                                        :captured-flags 3
+                                        :returned-flags 2}}
+                  :status :running}
+   :games-history [{}
+                   {}
+                   {}]})
+
 
 
 (defn step [state e]
@@ -58,13 +43,18 @@
 ;; For trying on the repl
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#_(e/build-event "5:08 Award: 7 3: Assassin gained the DEFENCE award!")
+(comment
 
-#_(def two-state (->> (slurp "./logs/two-ctf-game.log")
+  (e/build-event "5:08 Award: 7 3: Assassin gained the DEFENCE award!")
+
+  (def two-state (->> (slurp "./logs/two-ctf-game.log")
                    (s/split-lines)
                    (map e/build-event)
                    (remove nil?)
-                   (reduce step initial-game)))
+                   (reduce step {})))
 
-#_(-> one-state :games-history first teams)
+  (def g1 (-> two-state :games-history first))
+
+
+  )
 
