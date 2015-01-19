@@ -2,7 +2,8 @@
   (:require [clojure.string :as s]
             [live-arena.event :as e]
             [live-arena.stats :as stats]
-            [live-arena.utils :as u])
+            [live-arena.utils :as u]
+            [clojure.core.reducers :as r])
   (:gen-class))
 
 (comment
@@ -25,6 +26,13 @@
                    {}]})
 
 
+(defn combine [state1 state2]
+  {:current-game {}
+   :games-history (concat (:games-history state1) (:games-history state2))
+   :overall-stats {:frag-battles (merge-with + (-> state1 :overall-stats :frag-battles)
+                                             (-> state2 :overall-stats :frag-battles))
+                   :match-battles (merge-with + (-> state1 :overall-stats :match-battles)
+                                              (-> state2 :overall-stats :match-battles))}})
 
 (defn step [state e]
   (let [stepped-game (e/step-game e (:current-game state))]
@@ -47,13 +55,32 @@
 
   (e/build-event "5:08 Award: 7 3: Assassin gained the DEFENCE award!")
 
-  (def two-state (->> (slurp "./logs/two-ctf-game.log")
-                   (s/split-lines)
-                   (map e/build-event)
-                   (remove nil?)
-                   (reduce step {})))
+  ;; Simple one
+  (time (->> (slurp "./logs/two-ctf-game.log")
+          (s/split-lines)
+          (pmap e/build-event)
+          (remove nil?)
+          (reduce step {})))
 
-  (def g1 (-> two-state :games-history first))
+  ;; First performance optimization
+  (time (->> (slurp "./logs/two-ctf-game.log")
+          (s/split-lines)
+          (pmap e/build-event)
+          (remove nil?)
+          (partition-by #(instance? live_arena.event.ShutdownGameEvent %))))
+
+  ;; Second performance optimization 
+  (time (->> (slurp "/home/jmonetta/games.log")
+                          (s/split-lines)
+                          (pmap e/build-event)
+                          (remove nil?)
+                          (partition-by #(instance? live_arena.event.ShutdownGameEvent %))
+                          (partition 20)
+                          (reduce concat)
+                          (pmap (partial reduce step {}))
+                          (reduce combine {})))
+
+  
 
 
   )

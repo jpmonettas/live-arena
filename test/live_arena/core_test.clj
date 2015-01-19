@@ -23,7 +23,8 @@
              =>
 
              
-             {:overall-stats {:frag-battles {}}
+             {:overall-stats {:frag-battles {}
+                              :match-battles {}}
               :current-game {}
               :games-history [{:end-time "1:00"
                                :status :shutdown}
