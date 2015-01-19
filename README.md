@@ -1,6 +1,6 @@
 # live-arena
 
-FIXME: description
+FIXME
 
 ## Installation
 
