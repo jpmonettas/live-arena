@@ -12,3 +12,7 @@
 
 (def flag-key {"RED" :red
                "BLUE" :blue} )
+
+(defn log-lines [log]
+  (with-open [rdr (clojure.java.io/reader log)]
+    (line-seq rdr)))

@@ -61,6 +61,13 @@
           (pmap e/build-event)
           (remove nil?)
           (reduce step {})))
+  
+  ;; Simple two
+  (time (->> (u/log-lines "./logs/two-ctf-game.log")
+          (s/split-lines)
+          (pmap e/build-event)
+          (remove nil?)
+          (reduce step {})))
 
   ;; First performance optimization
   (time (->> (slurp "./logs/two-ctf-game.log")
